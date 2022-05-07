@@ -1,2 +1,2 @@
-# gorm-seeder
+# Simple Gorm seeder
 Gorm seeder package
