@@ -18,6 +18,7 @@ type SeederAbstract struct {
 }
 
 type SeedersStack struct {
+	db      *gorm.DB
 	Seeders []SeederInterface
 }
 
@@ -26,26 +27,43 @@ func (ss *SeedersStack) AddSeeder(seeder SeederInterface) *SeedersStack {
 	return ss
 }
 
-func (ss *SeedersStack) Seed(db *gorm.DB) error {
-	tx := db.Session(&gorm.Session{})
+func (ss *SeedersStack) Seed() error {
+	db := ss.getDb()
+	tx := db.Begin()
 	for _, seeder := range ss.Seeders {
 		err := seeder.Seed(tx)
 		if err != nil {
+			tx.Rollback()
 			return err
 		}
 	}
+	tx.Commit()
 	return nil
 }
 
-func (ss *SeedersStack) Clear(db *gorm.DB) error {
-	tx := db.Session(&gorm.Session{})
+func (ss *SeedersStack) Clear() error {
+	db := ss.getDb()
+	tx := db.Begin()
 	for _, seeder := range ss.Seeders {
 		err := seeder.Clear(tx)
 		if err != nil {
+			tx.Rollback()
 			return err
 		}
 	}
+	tx.Commit()
 	return nil
+}
+
+func (ss *SeedersStack) getDb() *gorm.DB {
+	if ss.db != nil {
+		return ss.db
+	}
+	return ss.db.Session(&gorm.Session{SkipDefaultTransaction: true})
+}
+
+func NewSeedersStack(db *gorm.DB) *SeedersStack {
+	return &SeedersStack{db: db}
 }
 
 func NewSeederAbstract(cfg SeederConfiguration) SeederAbstract {
