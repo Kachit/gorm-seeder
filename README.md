@@ -1,4 +1,9 @@
 # Simple Gorm seeder
+[![Build Status](https://app.travis-ci.com/Kachit/gorm-seeder.svg?branch=master)](https://app.travis-ci.com/Kachit/gorm-seeder)
+[![Codecov](https://codecov.io/gh/Kachit/gorm-seeder/branch/master/graph/badge.svg)](https://codecov.io/gh/Kachit/gorm-seeder)
+[![Go Report Card](https://goreportcard.com/badge/github.com/kachit/gorm-seeder)](https://goreportcard.com/report/github.com/kachit/gorm-seeder)
+[![Release](https://img.shields.io/github/v/release/Kachit/gorm-seeder.svg)](https://github.com/Kachit/gorm-seeder/releases)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/kachit/gorm-seeder/blob/master/LICENSE)
 
 ## Description
 Gorm seeder package
