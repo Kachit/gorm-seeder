@@ -1,6 +1,7 @@
 package gorm_seeder
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -15,6 +16,16 @@ type SeederConfiguration struct {
 
 type SeederAbstract struct {
 	Configuration SeederConfiguration
+}
+
+func (sa *SeederAbstract) Delete(db *gorm.DB, table string) error {
+	sql := fmt.Sprintf("DELETE FROM %v", table)
+	return db.Exec(sql).Error
+}
+
+func (sa *SeederAbstract) Truncate(db *gorm.DB, table string) error {
+	sql := fmt.Sprintf("TRUNCATE %v", table)
+	return db.Exec(sql).Error
 }
 
 type SeedersStack struct {

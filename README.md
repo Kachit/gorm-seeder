@@ -49,21 +49,19 @@ func (User) TableName() string {
 func (s *UsersSeeder) Seed(db *gorm.DB) error {
     var users []User
     for i := 0; i < s.Configuration.Rows; i++ {
-    
-        box := User{
-            Name:        "Name LastName",
-            Email:        "foo@bar.gov",
-            Password:        "password-hash-string",
+        user := User{
+            Name: "Name LastName",
+            Email: "foo@bar.gov",
+            Password: "password-hash-string",
         }
-        users = append(users, box)
+        users = append(users, user)
     }
     return db.CreateInBatches(users, s.Configuration.Rows).Error
 }
 
 func (s *UsersSeeder) Clear(db *gorm.DB) error {
     entity := User{}
-    sql := fmt.Sprintf("DELETE FROM %v", entity.TableName())
-    return db.Exec(sql).Error
+    return s.SeederAbstract.Delete(db, entity.TableName())
 }
 
 func main(){
