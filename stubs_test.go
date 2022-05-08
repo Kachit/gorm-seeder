@@ -1,6 +1,7 @@
 package gorm_seeder
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -34,10 +35,11 @@ func NewUsersSeederV1(cfg SeederConfiguration) *StubUsersSeederV1 {
 func (s *StubUsersSeederV1) Seed(db *gorm.DB) error {
 	var users []StubUser
 	for i := 0; i < s.Configuration.Rows; i++ {
+		indexStr := fmt.Sprint(i)
 		user := StubUser{
-			Name:     "Name LastName",
-			Email:    "foo@bar.gov",
-			Password: "password-hash-string",
+			Name:     "Name LastName" + indexStr,
+			Email:    "foo" + indexStr + "@bar.gov",
+			Password: "password-hash-string" + indexStr,
 		}
 		users = append(users, user)
 	}
