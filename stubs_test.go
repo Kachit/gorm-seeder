@@ -5,14 +5,6 @@ import (
 	"time"
 )
 
-type StubUsersSeeder struct {
-	SeederAbstract
-}
-
-func NewUsersSeeder(cfg SeederConfiguration) StubUsersSeeder {
-	return StubUsersSeeder{NewSeederAbstract(cfg)}
-}
-
 type StubUser struct {
 	Id        uint64    `json:"id" gorm:"primaryKey"`
 	Name      string    `json:"name"`
@@ -31,7 +23,15 @@ func (StubUser) TableName() string {
 	return "users"
 }
 
-func (s *StubUsersSeeder) Seed1(db *gorm.DB) error {
+type StubUsersSeederV1 struct {
+	SeederAbstract
+}
+
+func NewUsersSeederV1(cfg SeederConfiguration) *StubUsersSeederV1 {
+	return &StubUsersSeederV1{NewSeederAbstract(cfg)}
+}
+
+func (s *StubUsersSeederV1) Seed(db *gorm.DB) error {
 	var users []StubUser
 	for i := 0; i < s.Configuration.Rows; i++ {
 		user := StubUser{
@@ -44,7 +44,20 @@ func (s *StubUsersSeeder) Seed1(db *gorm.DB) error {
 	return db.CreateInBatches(users, s.Configuration.Rows).Error
 }
 
-func (s *StubUsersSeeder) Seed(db *gorm.DB) error {
+func (s *StubUsersSeederV1) Clear(db *gorm.DB) error {
+	entity := StubUser{}
+	return s.SeederAbstract.Delete(db, entity.TableName())
+}
+
+type StubUsersSeederV2 struct {
+	SeederAbstract
+}
+
+func NewUsersSeederV2(cfg SeederConfiguration) *StubUsersSeederV2 {
+	return &StubUsersSeederV2{NewSeederAbstract(cfg)}
+}
+
+func (s *StubUsersSeederV2) Seed(db *gorm.DB) error {
 	for i := 0; i < s.Configuration.Rows; i++ {
 		user := StubUser{
 			Name:     "Name LastName",
@@ -59,7 +72,7 @@ func (s *StubUsersSeeder) Seed(db *gorm.DB) error {
 	return nil
 }
 
-func (s *StubUsersSeeder) Clear(db *gorm.DB) error {
+func (s *StubUsersSeederV2) Clear(db *gorm.DB) error {
 	entity := StubUser{}
-	return s.SeederAbstract.Delete(db, entity.TableName())
+	return s.SeederAbstract.Truncate(db, entity.TableName())
 }

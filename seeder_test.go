@@ -30,3 +30,10 @@ func Test_SeederAbstract_Truncate(t *testing.T) {
 	err := sa.Truncate(db, "foo")
 	assert.NoError(t, err)
 }
+
+func Test_SeedersStack_AddSeeder(t *testing.T) {
+	ss := NewSeedersStack(nil)
+	assert.Len(t, ss.seeders, 0)
+	ss.AddSeeder(NewUsersSeederV1(SeederConfiguration{}))
+	assert.Len(t, ss.seeders, 1)
+}
