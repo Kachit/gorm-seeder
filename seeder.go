@@ -72,7 +72,8 @@ func (ss *SeedersStack) getDb() *gorm.DB {
 
 func (ss *SeedersStack) beginTransaction(db *gorm.DB) *gorm.DB {
 	if db.SkipDefaultTransaction == true {
-		db.Begin()
+		tx := db.Begin()
+		db = tx
 	}
 	return db
 }
