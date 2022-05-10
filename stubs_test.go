@@ -61,10 +61,11 @@ func NewUsersSeederV2(cfg SeederConfiguration) *StubUsersSeederV2 {
 
 func (s *StubUsersSeederV2) Seed(db *gorm.DB) error {
 	for i := 0; i < s.Configuration.Rows; i++ {
+		indexStr := fmt.Sprint(i)
 		user := StubUser{
-			Name:     "Name LastName",
-			Email:    "foo@bar.gov",
-			Password: "password-hash-string",
+			Name:     "Name LastName" + indexStr,
+			Email:    "foo" + indexStr + "@bar.gov",
+			Password: "password-hash-string" + indexStr,
 		}
 		err := db.Create(&user).Error
 		if err != nil {
