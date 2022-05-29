@@ -9,14 +9,14 @@ import (
 	"testing"
 )
 
-type SeederAbstract_TestSuite struct {
+type SeederAbstractTestSuite struct {
 	suite.Suite
 	db       *gorm.DB
 	mock     sqlmock.Sqlmock
 	testable SeederAbstract
 }
 
-func (suite *SeederAbstract_TestSuite) SetupTest() {
+func (suite *SeederAbstractTestSuite) SetupTest() {
 	db, mock := getDatabaseMock()
 	mock.MatchExpectationsInOrder(false)
 	suite.db = db
@@ -24,36 +24,38 @@ func (suite *SeederAbstract_TestSuite) SetupTest() {
 	suite.testable = NewSeederAbstract(SeederConfiguration{})
 }
 
-func (suite *SeederAbstract_TestSuite) TestDelete() {
+func (suite *SeederAbstractTestSuite) TestDelete() {
 	suite.mock.ExpectExec(regexp.QuoteMeta(
-		`DELETE FROM foo`)).WillReturnResult(sqlmock.NewResult(0, 1))
+		`DELETE FROM foo`)).
+		WillReturnResult(sqlmock.NewResult(0, 1))
 
 	sa := NewSeederAbstract(SeederConfiguration{})
 	err := sa.Delete(suite.db, "foo")
 	assert.NoError(suite.T(), err)
 }
 
-func (suite *SeederAbstract_TestSuite) TestTruncate() {
+func (suite *SeederAbstractTestSuite) TestTruncate() {
 	suite.mock.ExpectExec(regexp.QuoteMeta(
-		`TRUNCATE foo`)).WillReturnResult(sqlmock.NewResult(0, 1))
+		`TRUNCATE foo`)).
+		WillReturnResult(sqlmock.NewResult(0, 1))
 
 	sa := NewSeederAbstract(SeederConfiguration{})
 	err := sa.Truncate(suite.db, "foo")
 	assert.NoError(suite.T(), err)
 }
 
-func Test_SeederAbstract_TestSuite(t *testing.T) {
-	suite.Run(t, new(SeederAbstract_TestSuite))
+func TestSeederAbstractTestSuite(t *testing.T) {
+	suite.Run(t, new(SeederAbstractTestSuite))
 }
 
-type SeedersStack_TestSuite struct {
+type SeedersStackTestSuite struct {
 	suite.Suite
 	db       *gorm.DB
 	mock     sqlmock.Sqlmock
 	testable *SeedersStack
 }
 
-func (suite *SeedersStack_TestSuite) SetupTest() {
+func (suite *SeedersStackTestSuite) SetupTest() {
 	db, mock := getDatabaseMock()
 	mock.MatchExpectationsInOrder(false)
 	suite.db = db
@@ -61,28 +63,28 @@ func (suite *SeedersStack_TestSuite) SetupTest() {
 	suite.testable = NewSeedersStack(db)
 }
 
-func (suite *SeedersStack_TestSuite) TestAddSeeder() {
+func (suite *SeedersStackTestSuite) TestAddSeeder() {
 	assert.Len(suite.T(), suite.testable.seeders, 0)
 	suite.testable.AddSeeder(NewUsersSeederV1(SeederConfiguration{}))
 	assert.Len(suite.T(), suite.testable.seeders, 1)
 }
 
-func (suite *SeedersStack_TestSuite) TestBeginTransaction() {
+func (suite *SeedersStackTestSuite) TestBeginTransaction() {
 	suite.db.SkipDefaultTransaction = true
 	suite.testable.beginTransaction(suite.db)
 }
 
-func (suite *SeedersStack_TestSuite) TestCommitTransaction() {
+func (suite *SeedersStackTestSuite) TestCommitTransaction() {
 	suite.db.SkipDefaultTransaction = true
 	suite.testable.commitTransaction(suite.db)
 }
 
-func (suite *SeedersStack_TestSuite) TestRollbackTransaction() {
+func (suite *SeedersStackTestSuite) TestRollbackTransaction() {
 	suite.db.SkipDefaultTransaction = true
 	suite.testable.rollbackTransaction(suite.db)
 }
 
-func (suite *SeedersStack_TestSuite) TestSeedInBatches() {
+func (suite *SeedersStackTestSuite) TestSeedInBatches() {
 	suite.mock.ExpectBegin()
 	suite.mock.ExpectQuery(regexp.QuoteMeta(
 		`INSERT INTO "users" ("name","email","password","created_at") VALUES ($1,$2,$3,$4),($5,$6,$7,$8),($9,$10,$11,$12),($13,$14,$15,$16),($17,$18,$19,$20) RETURNING "id"`)).
@@ -94,7 +96,7 @@ func (suite *SeedersStack_TestSuite) TestSeedInBatches() {
 	assert.NoError(suite.T(), err)
 }
 
-func (suite *SeedersStack_TestSuite) TestSeedInLoopWithTransaction() {
+func (suite *SeedersStackTestSuite) TestSeedInLoopWithTransaction() {
 	suite.db.SkipDefaultTransaction = true
 	suite.mock.ExpectBegin()
 	suite.mock.ExpectQuery(regexp.QuoteMeta(
@@ -107,22 +109,26 @@ func (suite *SeedersStack_TestSuite) TestSeedInLoopWithTransaction() {
 	assert.NoError(suite.T(), err)
 }
 
-func (suite *SeedersStack_TestSuite) TestClearDelete() {
+func (suite *SeedersStackTestSuite) TestClearDelete() {
 	suite.mock.ExpectExec(regexp.QuoteMeta(
-		`DELETE FROM users`)).WillReturnResult(sqlmock.NewResult(0, 1))
+		`DELETE FROM users`)).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
 	suite.testable.AddSeeder(NewUsersSeederV1(SeederConfiguration{Rows: 5}))
 	err := suite.testable.Clear()
 	assert.NoError(suite.T(), err)
 }
 
-func (suite *SeedersStack_TestSuite) TestClearTruncate() {
+func (suite *SeedersStackTestSuite) TestClearTruncate() {
 	suite.mock.ExpectExec(regexp.QuoteMeta(
-		`TRUNCATE users`)).WillReturnResult(sqlmock.NewResult(0, 1))
+		`TRUNCATE users`)).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
 	suite.testable.AddSeeder(NewUsersSeederV2(SeederConfiguration{Rows: 5}))
 	err := suite.testable.Clear()
 	assert.NoError(suite.T(), err)
 }
 
-func Test_SeedersStack_TestSuite(t *testing.T) {
-	suite.Run(t, new(SeedersStack_TestSuite))
+func TestSeedersStackTestSuite(t *testing.T) {
+	suite.Run(t, new(SeedersStackTestSuite))
 }
