@@ -5,6 +5,7 @@
 [![Version](https://img.shields.io/github/go-mod/go-version/Kachit/gorm-seeder)](https://go.dev/doc/go1.14)
 [![Release](https://img.shields.io/github/v/release/Kachit/gorm-seeder.svg)](https://github.com/Kachit/gorm-seeder/releases)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/kachit/gorm-seeder/blob/master/LICENSE)
+[![GoDoc](https://pkg.go.dev/badge/github.com/kachit/gorm-seeder)](https://pkg.go.dev/github.com/kachit/gorm-seeder)
 
 ## Description
 Simple Gorm seeder package
