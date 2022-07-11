@@ -6,6 +6,7 @@
 [![Release](https://img.shields.io/github/v/release/Kachit/gorm-seeder.svg)](https://github.com/Kachit/gorm-seeder/releases)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/kachit/gorm-seeder/blob/master/LICENSE)
 [![GoDoc](https://pkg.go.dev/badge/github.com/kachit/gorm-seeder)](https://pkg.go.dev/github.com/kachit/gorm-seeder)
+[![Mentioned in Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go#third-party-apis)
 
 ## Description
 Simple Gorm seeder package
