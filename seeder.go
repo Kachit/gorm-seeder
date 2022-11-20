@@ -47,51 +47,46 @@ func (ss *SeedersStack) AddSeeder(seeder SeederInterface) *SeedersStack {
 
 //Seed method
 func (ss *SeedersStack) Seed() error {
-	db := ss.getDb()
-	tx := ss.beginTransaction(db)
+	tx := ss.beginTransaction(ss.db)
 	for _, seeder := range ss.seeders {
 		err := seeder.Seed(tx)
 		if err != nil {
-			ss.rollbackTransaction(db)
+			ss.rollbackTransaction(tx)
 			return err
 		}
 	}
-	ss.commitTransaction(db)
+	ss.commitTransaction(tx)
 	return nil
 }
 
 //Clear method
 func (ss *SeedersStack) Clear() error {
-	db := ss.getDb()
-	tx := ss.beginTransaction(db)
+	tx := ss.beginTransaction(ss.db)
 	for _, seeder := range ss.seeders {
 		err := seeder.Clear(tx)
 		if err != nil {
-			ss.rollbackTransaction(db)
+			ss.rollbackTransaction(tx)
 			return err
 		}
 	}
-	ss.commitTransaction(db)
+	ss.commitTransaction(tx)
 	return nil
-}
-
-//getDb method
-func (ss *SeedersStack) getDb() *gorm.DB {
-	return ss.db
 }
 
 //beginTransaction method
 func (ss *SeedersStack) beginTransaction(db *gorm.DB) *gorm.DB {
-	if db.SkipDefaultTransaction == true {
-		tx := db.Begin()
-		db = tx
+	var tx *gorm.DB
+	if db.SkipDefaultTransaction {
+		tx = db.Begin()
+	} else {
+		tx = db
 	}
-	return db
+	return tx
 }
 
 //commitTransaction method
 func (ss *SeedersStack) commitTransaction(db *gorm.DB) *gorm.DB {
-	if db.SkipDefaultTransaction == true {
+	if db.SkipDefaultTransaction {
 		db.Commit()
 	}
 	return db
@@ -99,7 +94,7 @@ func (ss *SeedersStack) commitTransaction(db *gorm.DB) *gorm.DB {
 
 //rollbackTransaction method
 func (ss *SeedersStack) rollbackTransaction(db *gorm.DB) *gorm.DB {
-	if db.SkipDefaultTransaction == true {
+	if db.SkipDefaultTransaction {
 		db.Rollback()
 	}
 	return db
